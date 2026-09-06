@@ -55,6 +55,73 @@ async function loginWithBackend(email: string, password: string): Promise<User> 
   return user;
 }
 
+// Registro usando usuarios mock mientras no existe backend.
+async function registerWithMock(name: string, email: string, password: string): Promise<User> {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const existingUser = mockUsers.find(
+    (mockUser) => mockUser.email.toLowerCase() === normalizedEmail,
+  );
+
+  if (existingUser) {
+    throw new Error("Ya existe una cuenta con este correo");
+  }
+
+  const newUser = {
+    id: `user-${mockUsers.length + 1}`,
+    name: name.trim(),
+    email: normalizedEmail,
+    password,
+    role: "participant" as const,
+  };
+
+  mockUsers.push(newUser);
+
+  // Nunca devolvemos la contraseña a la aplicación.
+  return {
+    id: newUser.id,
+    name: newUser.name,
+    email: newUser.email,
+    role: newUser.role,
+  };
+}
+
+// Registro usando el backend de Spring Boot.
+// El backend deberá implementar POST /api/auth/register.
+async function registerWithBackend(name: string, email: string, password: string): Promise<User> {
+  if (!apiUrl) {
+    throw new Error("La URL del backend no está configurada");
+  }
+
+  const response = await fetch(`${apiUrl}/api/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: name.trim(),
+      email: email.trim(),
+      password,
+    }),
+  });
+
+  if (response.status === 409) {
+    throw new Error("Ya existe una cuenta con este correo");
+  }
+
+  if (response.status === 400) {
+    throw new Error("Los datos enviados no son válidos");
+  }
+
+  if (!response.ok) {
+    throw new Error("No fue posible crear la cuenta");
+  }
+
+  const user = (await response.json()) as User;
+
+  return user;
+}
+
 export const authService = {
   // Sin VITE_API_URL: mock.
   // Con VITE_API_URL: backend.
@@ -65,5 +132,14 @@ export const authService = {
     }
 
     return loginWithBackend(email, password);
+  },
+
+  // Registro usando mock o backend dependiendo de la configuración.
+  async register(name: string, email: string, password: string): Promise<User> {
+    if (!apiUrl) {
+      return registerWithMock(name, email, password);
+    }
+
+    return registerWithBackend(name, email, password);
   },
 };
