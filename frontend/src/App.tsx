@@ -6,7 +6,7 @@ function App() {
           M
         </div>
 
-        <h1 className="font-display text-3xl font-bold text-txt">MeetFlow</h1>
+        <h1 className="font-display text-3xl font-bold text-txt">MeetCore</h1>
 
         <p className="mt-2 text-sm text-txt-secondary">
           Videoconferencias y colaboración en un solo lugar.
