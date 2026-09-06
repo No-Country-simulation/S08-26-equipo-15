@@ -11,6 +11,7 @@ export interface AuthContextValue {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -51,6 +52,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  // Solicita la recuperación de contraseña mediante el servicio de autenticación.
+  async function forgotPassword(email: string): Promise<void> {
+    setIsLoading(true);
+
+    try {
+      await authService.forgotPassword(email);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   // Elimina el usuario actual del estado de autenticación.
   function logout(): void {
     setUser(null);
@@ -62,6 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     isLoading,
     login,
     register,
+    forgotPassword,
     logout,
   };
 

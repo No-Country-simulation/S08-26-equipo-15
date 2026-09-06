@@ -1,4 +1,5 @@
 import type { User } from "../types/user";
+
 import { mockUsers } from "./mock/users-mock";
 
 const apiUrl = import.meta.env.VITE_API_URL?.trim();
@@ -122,6 +123,21 @@ async function registerWithBackend(name: string, email: string, password: string
   return user;
 }
 
+// Recuperación de contraseña usando mock mientras no existe backend.
+async function forgotPasswordWithMock(email: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const userExists = mockUsers.some((mockUser) => mockUser.email.toLowerCase() === normalizedEmail);
+
+  // Simulamos el envío aunque el correo no exista.
+  // Esto evita revelar si una cuenta está registrada.
+  if (!userExists) {
+    return;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, 800));
+}
+
 export const authService = {
   // Sin VITE_API_URL: mock.
   // Con VITE_API_URL: backend.
@@ -141,5 +157,14 @@ export const authService = {
     }
 
     return registerWithBackend(name, email, password);
+  },
+
+  // Recuperación de contraseña.
+  async forgotPassword(email: string): Promise<void> {
+    if (!apiUrl) {
+      return forgotPasswordWithMock(email);
+    }
+
+    throw new Error("La recuperación de contraseña aún no está configurada en el backend");
   },
 };
