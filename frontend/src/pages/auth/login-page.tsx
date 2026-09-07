@@ -1,23 +1,36 @@
 import { useState } from "react";
+
 import type { SyntheticEvent } from "react";
+
 import { Eye, EyeOff, Lock, Mail, User, Video } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 import { AuthLayout } from "../../layouts/auth-layout";
+
 import { useAuth } from "../../hooks/use-auth";
 
 export function LoginPage() {
+  const navigate = useNavigate();
+
   const { login, register, isLoading } = useAuth();
 
   const [isRegistering, setIsRegistering] = useState(false);
 
   const [name, setName] = useState("");
+
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [rememberMe, setRememberMe] = useState(true);
+
   const [acceptTerms, setAcceptTerms] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState("");
 
   function validateRegisterForm(): string | null {
@@ -67,6 +80,7 @@ export function LoginPage() {
 
       try {
         await register(name, email, password);
+        navigate("/dashboard");
       } catch (registerError) {
         setError(
           registerError instanceof Error ? registerError.message : "No fue posible crear la cuenta",
@@ -85,6 +99,7 @@ export function LoginPage() {
 
     try {
       await login(email, password);
+      navigate("/dashboard");
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "No fue posible iniciar sesión");
     }
@@ -97,9 +112,7 @@ export function LoginPage() {
 
   return (
     <AuthLayout>
-      {/* Card de autenticación */}
       <div className="rounded-2xl border border-border bg-surface p-7 shadow-lg shadow-black/5 sm:p-9 lg:p-10">
-        {/* Encabezado */}
         <div className="mb-7">
           <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
             {isRegistering ? (
@@ -120,7 +133,6 @@ export function LoginPage() {
           </p>
         </div>
 
-        {/* Error */}
         {error && (
           <div
             className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-relaxed text-red-700"
@@ -130,9 +142,7 @@ export function LoginPage() {
           </div>
         )}
 
-        {/* Formulario */}
         <form className="space-y-5" onSubmit={handleSubmit}>
-          {/* Nombre */}
           {isRegistering && (
             <div className="space-y-1.5">
               <label htmlFor="name" className="block text-sm font-medium text-txt">
@@ -160,7 +170,6 @@ export function LoginPage() {
             </div>
           )}
 
-          {/* Correo electrónico */}
           <div className="space-y-1.5">
             <label htmlFor="email" className="block text-sm font-medium text-txt">
               Correo electrónico
@@ -186,7 +195,6 @@ export function LoginPage() {
             </div>
           </div>
 
-          {/* Contraseña */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between gap-4">
               <label htmlFor="password" className="block text-sm font-medium text-txt">
@@ -221,7 +229,6 @@ export function LoginPage() {
                 className="h-11 w-full rounded-xl border border-border bg-app-bg pl-10 pr-11 text-sm text-txt shadow-sm outline-none transition-all placeholder:text-txt-secondary/60 focus:border-primary focus:bg-surface focus:ring-4 focus:ring-primary/10"
               />
 
-              {/* Mostrar / ocultar contraseña */}
               <button
                 type="button"
                 aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
@@ -233,7 +240,6 @@ export function LoginPage() {
             </div>
           </div>
 
-          {/* Confirmar contraseña */}
           {isRegistering && (
             <div className="space-y-1.5">
               <label htmlFor="confirm-password" className="block text-sm font-medium text-txt">
@@ -261,7 +267,6 @@ export function LoginPage() {
             </div>
           )}
 
-          {/* Recordar sesión */}
           {!isRegistering && (
             <label className="flex cursor-pointer items-center gap-2">
               <input
@@ -277,7 +282,6 @@ export function LoginPage() {
             </label>
           )}
 
-          {/* Términos */}
           {isRegistering && (
             <label className="flex cursor-pointer items-start gap-2">
               <input
@@ -287,6 +291,7 @@ export function LoginPage() {
                 checked={acceptTerms}
                 onChange={(event) => setAcceptTerms(event.target.checked)}
                 className="mt-0.5 h-4 w-4 rounded accent-primary"
+                required
               />
 
               <span className="text-sm leading-relaxed text-txt-secondary">
@@ -295,7 +300,6 @@ export function LoginPage() {
             </label>
           )}
 
-          {/* Botón principal */}
           <button
             type="submit"
             disabled={isLoading}
@@ -304,7 +308,6 @@ export function LoginPage() {
             {isLoading ? (
               <>
                 <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-
                 {isRegistering ? "Creando cuenta..." : "Iniciando sesión..."}
               </>
             ) : isRegistering ? (
@@ -315,7 +318,6 @@ export function LoginPage() {
           </button>
         </form>
 
-        {/* Separador */}
         {!isRegistering && (
           <>
             <div className="relative my-7">
@@ -328,7 +330,6 @@ export function LoginPage() {
               </div>
             </div>
 
-            {/* Proveedores externos */}
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
@@ -349,7 +350,6 @@ export function LoginPage() {
           </>
         )}
 
-        {/* Registro / Login */}
         <p className="pt-7 text-center text-sm text-txt-secondary">
           {isRegistering ? "¿Ya tienes una cuenta?" : "¿No tienes cuenta?"}{" "}
           <button
