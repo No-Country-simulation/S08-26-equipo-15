@@ -3,10 +3,10 @@ spring:
     name: meetcore
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/meetcore_db}
-    username: ${POSTGRES_USER:meetcore_user}
-    password: ${POSTGRES_PASSWORD:meetcore_pass}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:Admin1234}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
   flyway:
-    enabled: true
+    enabled: false
