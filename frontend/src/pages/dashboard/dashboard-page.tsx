@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, CalendarDays, Clock3, Plus, Users, Video } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { useAuth } from "../../hooks/use-auth";
 import { StatCard } from "../../components/dashboard/stat-card";
@@ -38,6 +39,28 @@ export function DashboardPage() {
 
     void loadDashboard();
   }, []);
+
+  function getGreeting(): string {
+    const hour = new Date().getHours();
+
+    if (hour < 12) {
+      return "Buenos días";
+    }
+
+    if (hour < 19) {
+      return "Buenas tardes";
+    }
+
+    return "Buenas noches";
+  }
+
+  function formatCurrentDate(): string {
+    return new Intl.DateTimeFormat("es-CO", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }).format(new Date());
+  }
 
   function formatMeetingDate(startAt: string): string {
     const date = new Date(startAt);
@@ -83,10 +106,12 @@ export function DashboardPage() {
     <div className="space-y-8">
       {/* Bienvenida */}
       <section>
-        <p className="mb-2 text-sm font-medium text-txt-secondary">Domingo, 6 de septiembre</p>
+        <p className="mb-2 text-sm font-medium capitalize text-txt-secondary">
+          {formatCurrentDate()}
+        </p>
 
         <h1 className="font-display text-2xl font-bold tracking-tight text-txt sm:text-3xl">
-          Buenos días, {user?.name?.split(" ")[0] ?? "usuario"} 👋
+          {getGreeting()}, {user?.name?.split(" ")[0] ?? "usuario"} 👋
         </h1>
 
         <p className="mt-2 text-sm text-txt-secondary">
@@ -128,21 +153,21 @@ export function DashboardPage() {
 
           {nextMeeting && (
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <button
-                type="button"
+              <Link
+                to="/meetings"
                 className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
               >
                 <Video size={17} />
                 Unirse
-              </button>
+              </Link>
 
-              <button
-                type="button"
+              <Link
+                to="/meetings"
                 className="inline-flex h-11 items-center gap-2 rounded-xl bg-white/10 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/15"
               >
                 Ver detalles
                 <ArrowRight size={16} />
-              </button>
+              </Link>
             </div>
           )}
         </article>
@@ -151,8 +176,8 @@ export function DashboardPage() {
           <h2 className="text-base font-semibold text-txt">Acciones rápidas</h2>
 
           <div className="mt-5 grid gap-3">
-            <button
-              type="button"
+            <Link
+              to="/meetings"
               className="flex items-center gap-3 rounded-xl border border-divider p-4 text-left transition-colors hover:bg-app-bg"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-subtle text-primary">
@@ -164,10 +189,10 @@ export function DashboardPage() {
 
                 <span className="block text-xs text-txt-secondary">Programa una reunión</span>
               </span>
-            </button>
+            </Link>
 
-            <button
-              type="button"
+            <Link
+              to="/meetings"
               className="flex items-center gap-3 rounded-xl border border-divider p-4 text-left transition-colors hover:bg-app-bg"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-info-bg text-info">
@@ -179,7 +204,7 @@ export function DashboardPage() {
 
                 <span className="block text-xs text-txt-secondary">Usa un código de reunión</span>
               </span>
-            </button>
+            </Link>
           </div>
         </article>
       </section>
@@ -193,13 +218,13 @@ export function DashboardPage() {
             <p className="mt-1 text-sm text-txt-secondary">Tus siguientes reuniones programadas.</p>
           </div>
 
-          <button
-            type="button"
+          <Link
+            to="/meetings"
             className="hidden items-center gap-1 text-sm font-medium text-primary hover:text-primary-hover sm:flex"
           >
             Ver todas
             <ArrowRight size={16} />
-          </button>
+          </Link>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-divider bg-surface">

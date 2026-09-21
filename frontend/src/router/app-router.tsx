@@ -2,29 +2,26 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom
 
 import { useAuth } from "../hooks/use-auth";
 import { AppLayout } from "../layouts/app-layout";
+
 import { ForgotPasswordPage } from "../pages/auth/forgot-password-page";
 import { LoginPage } from "../pages/auth/login-page";
 import { DashboardPage } from "../pages/dashboard/dashboard-page";
+import { SettingsPage } from "../pages/settings/settings-page";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-
             <Route path="/meetings" element={<PlaceholderPage title="Reuniones" />} />
-
             <Route path="/calendar" element={<PlaceholderPage title="Calendario" />} />
-
             <Route path="/history" element={<PlaceholderPage title="Historial" />} />
-
-            <Route path="/settings" element={<PlaceholderPage title="Configuración" />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>
 
