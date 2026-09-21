@@ -3,24 +3,24 @@ import type { DashboardData } from "../../types/dashboard";
 export const dashboardMock: DashboardData = {
   stats: [
     {
-      label: "Reuniones este mes",
+      label: "Reuniones realizadas",
       value: "24",
-      detail: "+12% vs. mes anterior",
+      detail: "Este mes",
     },
     {
-      label: "Horas reunido",
+      label: "Próximas reuniones",
+      value: "3",
+      detail: "Esta semana",
+    },
+    {
+      label: "Horas en reuniones",
       value: "18h 42m",
-      detail: "+8% vs. mes anterior",
+      detail: "Este mes",
     },
     {
-      label: "Participantes",
+      label: "Participantes únicos",
       value: "86",
-      detail: "+18% vs. mes anterior",
-    },
-    {
-      label: "Próxima reunión",
-      value: "Hoy",
-      detail: "En 35 minutos",
+      detail: "Este mes",
     },
   ],
 
