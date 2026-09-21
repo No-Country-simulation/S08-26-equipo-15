@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+
 import type { User } from "../types/user";
 import { authService } from "../services/auth-service";
 
@@ -19,15 +20,36 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Contexto global para compartir el estado de autenticación.
+const AUTH_STORAGE_KEY = "meetcore_user";
+
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// Proporciona el estado y las acciones de autenticación a la aplicación.
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem(AUTH_STORAGE_KEY);
+
+    if (!storedUser) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storedUser) as User;
+    } catch {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      return null;
+    }
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
-  // Autentica al usuario mediante el servicio de autenticación.
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  }, [user]);
+
   async function login(email: string, password: string): Promise<void> {
     setIsLoading(true);
 
@@ -39,7 +61,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // Crea una cuenta y autentica automáticamente al nuevo usuario.
   async function register(name: string, email: string, password: string): Promise<void> {
     setIsLoading(true);
 
@@ -52,7 +73,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // Solicita la recuperación de contraseña mediante el servicio de autenticación.
   async function forgotPassword(email: string): Promise<void> {
     setIsLoading(true);
 
@@ -63,7 +83,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // Elimina el usuario actual del estado de autenticación.
   function logout(): void {
     setUser(null);
   }

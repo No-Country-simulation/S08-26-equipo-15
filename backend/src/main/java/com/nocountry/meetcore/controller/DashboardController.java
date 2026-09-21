@@ -16,31 +16,53 @@ public class DashboardController {
 
     @GetMapping
     public ResponseEntity<DashboardDataDTO> getDashboardData() {
-        
+
         List<DashboardStatDTO> stats = Arrays.asList(
-                DashboardStatDTO.builder().label("Total Meetings").value("12").detail("+2 from last week").build(),
-                DashboardStatDTO.builder().label("Upcoming").value("3").detail("Next 7 days").build(),
-                DashboardStatDTO.builder().label("Total Time").value("8.5h").detail("This month").build()
+
+                DashboardStatDTO.builder()
+                        .label("Reuniones este mes")
+                        .value("12")
+                        .detail("+2 respecto al mes anterior")
+                        .build(),
+
+                DashboardStatDTO.builder()
+                        .label("Horas reunido")
+                        .value("8.5 h")
+                        .detail("Este mes")
+                        .build(),
+
+                DashboardStatDTO.builder()
+                        .label("Participantes")
+                        .value("86")
+                        .detail("+18% respecto al mes anterior")
+                        .build(),
+
+                DashboardStatDTO.builder()
+                        .label("Próxima reunión")
+                        .value("Hoy")
+                        .detail("En 35 minutos")
+                        .build()
         );
 
         MeetingDTO nextMeeting = MeetingDTO.builder()
                 .id("m1")
-                .title("Daily Standup")
-                .startAt("2024-03-20T10:00:00Z")
+                .title("Daily de desarrollo")
+                .startAt("2026-09-21T17:00:00Z")
                 .durationMinutes(30)
                 .participants(5)
                 .status("scheduled")
                 .build();
 
         List<MeetingDTO> upcoming = Arrays.asList(
+
                 MeetingDTO.builder()
-                .id("m2")
-                .title("Project Review")
-                .startAt("2024-03-21T15:00:00Z")
-                .durationMinutes(60)
-                .participants(8)
-                .status("scheduled")
-                .build()
+                        .id("m2")
+                        .title("Revisión del proyecto")
+                        .startAt("2026-09-22T15:00:00Z")
+                        .durationMinutes(60)
+                        .participants(8)
+                        .status("scheduled")
+                        .build()
         );
 
         DashboardDataDTO dashboardData = DashboardDataDTO.builder()
