@@ -7,7 +7,7 @@ import { MeetingListItem } from "../../components/meeting/meeting-list-item";
 import { dashboardService } from "../../services/dashboard-service";
 import type { DashboardData } from "../../types/dashboard";
 
-const statIcons = [Video, Clock3, Users, CalendarDays];
+const statIcons = [Video, CalendarDays, Clock3, Users];
 
 export function DashboardPage() {
   const { user } = useAuth();
